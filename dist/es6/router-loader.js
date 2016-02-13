@@ -27,17 +27,7 @@ export class RouterLoader {
             this.loadJsonMap().then(routes => {
                 this.router.configure(c => {
                     if (config) {
-                        if (config.title) {
-                            c.title = config.title;
-                        }
-                        
-                        if (config.options.pushState) {
-                            c.options.pushState = config.options.pushState;
-                        }
-                        
-                        if (config.options.root) {
-                            c.options.root = config.options.root;
-                        }
+                        Object.merge(c, config);
                     }
                 });
                 resolve();
@@ -49,7 +39,7 @@ export class RouterLoader {
      * Define Routes
      * 
      * This method is called during the bootstrapping phase
-     * when Aurelis first loads. It is where you pass through
+     * when Aurelia first loads. It is where you pass through
      * the location of your route files.
      * 
      * @param routes {array}
@@ -57,7 +47,7 @@ export class RouterLoader {
      * 
      */
     defineRoutes(routes) {
-        this._jsonFiles.push(routes);
+        this._routeLocations = routes;
     }
 	
     /**
@@ -69,22 +59,22 @@ export class RouterLoader {
      */
     loadJsonMap() {
         return new Promise((resolve, reject) => {
-            let finalJson = [];
+            let finalRoutes = [];
             
-            for (let i = 0; i < _routeLocations.length; i++) {
-                let pointer = _routeLocations[i];
+            for (let i = 0; i < this._routeLocations.length; i++) {
+                let pointer = this._routeLocations[i];
                 
                 if (pointer) {
-                    var loadedJson = require(pointer + '!json');
+                    var loadedRoutes = require(pointer);
                     
-                    if (loadedJson) {
-                        finalJson.push(loadedJson);
+                    if (loadedRoutes) {
+                        finalRoutes.push(loadedRoutes);
                     }
                 }
             }
             
-            this._loadedJson = finalJson;  
-            resolve(finalJson);
+            this._loadedJson = finalRoutes;  
+            resolve(finalRoutes);
         });
     }
 

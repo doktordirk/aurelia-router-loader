@@ -37,17 +37,7 @@ System.register(['aurelia-router'], function (_export) {
                             _this.loadJsonMap().then(function (routes) {
                                 _this.router.configure(function (c) {
                                     if (config) {
-                                        if (config.title) {
-                                            c.title = config.title;
-                                        }
-
-                                        if (config.options.pushState) {
-                                            c.options.pushState = config.options.pushState;
-                                        }
-
-                                        if (config.options.root) {
-                                            c.options.root = config.options.root;
-                                        }
+                                        Object.merge(c, config);
                                     }
                                 });
                                 resolve();
@@ -57,7 +47,7 @@ System.register(['aurelia-router'], function (_export) {
                 }, {
                     key: 'defineRoutes',
                     value: function defineRoutes(routes) {
-                        this._jsonFiles.push(routes);
+                        this._routeLocations = routes;
                     }
                 }, {
                     key: 'loadJsonMap',
@@ -65,22 +55,22 @@ System.register(['aurelia-router'], function (_export) {
                         var _this2 = this;
 
                         return new Promise(function (resolve, reject) {
-                            var finalJson = [];
+                            var finalRoutes = [];
 
-                            for (var i = 0; i < _routeLocations.length; i++) {
-                                var pointer = _routeLocations[i];
+                            for (var i = 0; i < _this2._routeLocations.length; i++) {
+                                var pointer = _this2._routeLocations[i];
 
                                 if (pointer) {
-                                    var loadedJson = require(pointer + '!json');
+                                    var loadedRoutes = require(pointer);
 
-                                    if (loadedJson) {
-                                        finalJson.push(loadedJson);
+                                    if (loadedRoutes) {
+                                        finalRoutes.push(loadedRoutes);
                                     }
                                 }
                             }
 
-                            _this2._loadedJson = finalJson;
-                            resolve(finalJson);
+                            _this2._loadedJson = finalRoutes;
+                            resolve(finalRoutes);
                         });
                     }
                 }]);
