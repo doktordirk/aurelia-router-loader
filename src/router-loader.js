@@ -27,17 +27,7 @@ export class RouterLoader {
             this.loadJsonMap().then(routes => {
                 this.router.configure(c => {
                     if (config) {
-                        if (config.title) {
-                            c.title = config.title;
-                        }
-                        
-                        if (config.options.pushState) {
-                            c.options.pushState = config.options.pushState;
-                        }
-                        
-                        if (config.options.root) {
-                            c.options.root = config.options.root;
-                        }
+                        Object.merge(c, config);
                     }
                 });
                 resolve();
