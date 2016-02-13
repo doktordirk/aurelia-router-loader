@@ -53,17 +53,14 @@
     },
     "peerDependencies": {
         "aurelia-router": "npm:aurelia-router@^1.0.0-beta.1.1.1",
-        "json": "github:systemjs/plugin-json@^0.1.0",
         "core-js": "^2.0.3"
     },
     "dependencies": {
         "aurelia-router": "npm:aurelia-router@^1.0.0-beta.1.1.1",
-        "json": "github:systemjs/plugin-json@^0.1.0",
         "core-js": "^2.0.3"
     },
     "devDependencies": {
         "aurelia-router": "npm:aurelia-router@^1.0.0-beta.1.1.1",
-        "json": "github:systemjs/plugin-json@^0.1.0",
         "core-js": "^2.0.3"
     }
   }
