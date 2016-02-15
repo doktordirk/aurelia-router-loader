@@ -16,7 +16,7 @@ define(['exports', 'aurelia-router'], function (exports, _aureliaRouter) {
             this.container = null;
             this.router = null;
             this._routeLocations = [];
-            this._loadedJson = {};
+            this._loadedRoutes = {};
         }
 
         _createClass(RouterLoader, [{
@@ -31,7 +31,7 @@ define(['exports', 'aurelia-router'], function (exports, _aureliaRouter) {
                 var _this = this;
 
                 return new Promise(function (resolve, reject) {
-                    _this.loadJsonMap().then(function (routes) {
+                    _this.loadRoutesMap().then(function (routes) {
                         _this.router.configure(function (c) {
                             if (config) {
                                 Object.merge(c, config);
@@ -47,8 +47,8 @@ define(['exports', 'aurelia-router'], function (exports, _aureliaRouter) {
                 this._routeLocations = routes;
             }
         }, {
-            key: 'loadJsonMap',
-            value: function loadJsonMap() {
+            key: 'loadRoutesMap',
+            value: function loadRoutesMap() {
                 var _this2 = this;
 
                 return new Promise(function (resolve, reject) {
@@ -58,16 +58,36 @@ define(['exports', 'aurelia-router'], function (exports, _aureliaRouter) {
                         var pointer = _this2._routeLocations[i];
 
                         if (pointer) {
-                            var loadedRoutes = require(pointer);
-
-                            if (loadedRoutes) {
-                                finalRoutes.push(loadedRoutes);
-                            }
+                            _this2.require(pointer).then(function (routes) {
+                                if (routes) {
+                                    finalRoutes.push(routes);
+                                }
+                            })['catch'](function (e) {
+                                throw new Error(e);
+                            });
                         }
                     }
 
-                    _this2._loadedJson = finalRoutes;
+                    _this2._loadedRoutes = finalRoutes;
                     resolve(finalRoutes);
+                });
+            }
+        }, {
+            key: 'require',
+            value: function require(what) {
+                return new Promise(function (resovle, reject) {
+                    var xmlhttp = new XMLHttpRequest();
+
+                    xmlhttp.onreadystatechange = function () {
+                        if (xmlhttp.readyState == 4) {
+                            resolve(xmlhttp.responseText);
+                        } else {
+                            reject(new Error('Could not load local file.'));
+                        }
+                    };
+
+                    xmlhttp.open('GET', what, true);
+                    xmlhttp.send(null);
                 });
             }
         }]);
