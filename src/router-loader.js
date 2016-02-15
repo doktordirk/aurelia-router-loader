@@ -5,11 +5,15 @@ export class RouterLoader {
     router = null;
     
     _routeLocations = [];
-    _loadedJson = {};
+    _loadedRoutes = {};
     
     /**
      * Register Container
      * Passed in DI container reference
+     * 
+     * @param container {any}
+     * @returns void
+     * 
      */
     registerContainer(container) {
         this.container = container;
@@ -21,10 +25,13 @@ export class RouterLoader {
      * 
      * A method used by the bootstrapping phase 
      * to load our routes.
+     * 
+     * @param config {any}
+     * 
      */
     loadRoutes(config) {
         return new Promise((resolve, reject) => {
-            this.loadJsonMap().then(routes => {
+            this.loadRoutesMap().then(routes => {
                 this.router.configure(c => {
                     if (config) {
                         Object.merge(c, config);
@@ -51,13 +58,15 @@ export class RouterLoader {
     }
 	
     /**
-     * Load Json Map
+     * Load Routes Map
      * 
      * This method handles looping through the supplied locations
      * and then tries to load the JSON, storing it in an array.
      * 
+     * @returns Promise
+     * 
      */
-    loadJsonMap() {
+    loadRoutesMap() {
         return new Promise((resolve, reject) => {
             let finalRoutes = [];
             
@@ -65,16 +74,45 @@ export class RouterLoader {
                 let pointer = this._routeLocations[i];
                 
                 if (pointer) {
-                    var loadedRoutes = require(pointer);
-                    
-                    if (loadedRoutes) {
-                        finalRoutes.push(loadedRoutes);
-                    }
+                    this.require(pointer).then(routes => {
+                       if (routes) {
+                           finalRoutes.push(routes);
+                       } 
+                    }).catch(e => {
+                        throw new Error(e);
+                    });
                 }
             }
             
-            this._loadedJson = finalRoutes;  
+            this._loadedRoutes = finalRoutes;  
             resolve(finalRoutes);
+        });
+    }
+    
+    /**
+     * Require
+     * 
+     * Performs an XMLHttpRequest and fetches a local
+     * file from the local file system.
+     * 
+     * @param what {any}
+     * @returns Promise
+     * 
+     */
+    require(what) {
+        return new Promise((resovle, reject) => {
+            let xmlhttp = new XMLHttpRequest();
+            
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) { 
+                    resolve(xmlhttp.responseText); 
+                } else {
+                    reject(new Error('Could not load local file.'));
+                }
+            }
+            
+            xmlhttp.open("GET", what, true);
+            xmlhttp.send(null); 
         });
     }
 
