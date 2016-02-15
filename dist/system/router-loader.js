@@ -1,4 +1,4 @@
-System.register(['aurelia-router'], function (_export) {
+System.register(['aurelia-router', 'core-js'], function (_export) {
     'use strict';
 
     var Router, RouterLoader;
@@ -10,7 +10,7 @@ System.register(['aurelia-router'], function (_export) {
     return {
         setters: [function (_aureliaRouter) {
             Router = _aureliaRouter.Router;
-        }],
+        }, function (_coreJs) {}],
         execute: function () {
             RouterLoader = (function () {
                 function RouterLoader() {

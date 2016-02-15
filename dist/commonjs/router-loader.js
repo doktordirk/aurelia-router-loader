@@ -10,6 +10,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _aureliaRouter = require('aurelia-router');
 
+require('core-js');
+
 var RouterLoader = (function () {
     function RouterLoader() {
         _classCallCheck(this, RouterLoader);

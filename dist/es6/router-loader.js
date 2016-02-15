@@ -1,4 +1,5 @@
 import {Router} from 'aurelia-router';
+import 'core-js';
 
 export class RouterLoader {
     container = null;

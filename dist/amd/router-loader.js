@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-router'], function (exports, _aureliaRouter) {
+define(['exports', 'aurelia-router', 'core-js'], function (exports, _aureliaRouter, _coreJs) {
     'use strict';
 
     Object.defineProperty(exports, '__esModule', {
