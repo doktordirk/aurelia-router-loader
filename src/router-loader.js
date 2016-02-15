@@ -111,7 +111,7 @@ export class RouterLoader {
                 }
             }
             
-            xmlhttp.open("GET", what, true);
+            xmlhttp.open('GET', what, true);
             xmlhttp.send(null); 
         });
     }
