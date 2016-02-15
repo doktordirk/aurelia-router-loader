@@ -11,8 +11,8 @@ export function configure(aurelia) {
         .developmentLogging()
         .plugin('aurelia-router-loader', config => {
             config.defineRoutes([
-                'routes/main.json',
-                'routes/admin.json' 
+                '/routes/main.json',
+                '/routes/admin.json' 
             ]);
         });
         
