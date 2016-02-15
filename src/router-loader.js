@@ -101,7 +101,7 @@ export class RouterLoader {
      * 
      */
     require(what) {
-        return new Promise((resovle, reject) => {
+        return new Promise((resolve, reject) => {
             let xmlhttp = new XMLHttpRequest();
             
             xmlhttp.onreadystatechange = function() {

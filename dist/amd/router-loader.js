@@ -75,7 +75,7 @@ define(['exports', 'aurelia-router', 'core-js'], function (exports, _aureliaRout
         }, {
             key: 'require',
             value: function require(what) {
-                return new Promise(function (resovle, reject) {
+                return new Promise(function (resolve, reject) {
                     var xmlhttp = new XMLHttpRequest();
 
                     xmlhttp.onreadystatechange = function () {

@@ -78,7 +78,7 @@ System.register(['aurelia-router', 'core-js'], function (_export) {
                 }, {
                     key: 'require',
                     value: function require(what) {
-                        return new Promise(function (resovle, reject) {
+                        return new Promise(function (resolve, reject) {
                             var xmlhttp = new XMLHttpRequest();
 
                             xmlhttp.onreadystatechange = function () {
