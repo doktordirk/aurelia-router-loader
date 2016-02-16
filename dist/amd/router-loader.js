@@ -1,4 +1,4 @@
-define(['exports', 'aurelia-router', 'core-js'], function (exports, _aureliaRouter, _coreJs) {
+define(['exports', 'aurelia-loader', 'aurelia-router', 'core-js'], function (exports, _aureliaLoader, _aureliaRouter, _coreJs) {
     'use strict';
 
     Object.defineProperty(exports, '__esModule', {
@@ -23,6 +23,7 @@ define(['exports', 'aurelia-router', 'core-js'], function (exports, _aureliaRout
             key: 'registerContainer',
             value: function registerContainer(container) {
                 this.container = container;
+                this.loader = container.get(_aureliaLoader.Loader);
                 this.router = container.get(_aureliaRouter.Router);
             }
         }, {
@@ -58,36 +59,16 @@ define(['exports', 'aurelia-router', 'core-js'], function (exports, _aureliaRout
                         var pointer = _this2._routeLocations[i];
 
                         if (pointer) {
-                            _this2.require(pointer).then(function (routes) {
+                            _this2.loader.loadText(pointer).then(function (routes) {
                                 if (routes) {
                                     finalRoutes.push(routes);
                                 }
-                            })['catch'](function (e) {
-                                throw new Error(e);
                             });
                         }
                     }
 
                     _this2._loadedRoutes = finalRoutes;
                     resolve(finalRoutes);
-                });
-            }
-        }, {
-            key: 'require',
-            value: function require(what) {
-                return new Promise(function (resolve, reject) {
-                    var xmlhttp = new XMLHttpRequest();
-
-                    xmlhttp.onreadystatechange = function () {
-                        if (xmlhttp.readyState == 4) {
-                            resolve(xmlhttp.responseText);
-                        } else {
-                            reject(new Error('Could not load local file.'));
-                        }
-                    };
-
-                    xmlhttp.open('GET', what, true);
-                    xmlhttp.send(null);
                 });
             }
         }]);

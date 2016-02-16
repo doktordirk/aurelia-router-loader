@@ -1,14 +1,16 @@
-System.register(['aurelia-router', 'core-js'], function (_export) {
+System.register(['aurelia-loader', 'aurelia-router', 'core-js'], function (_export) {
     'use strict';
 
-    var Router, RouterLoader;
+    var Loader, Router, RouterLoader;
 
     var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
     return {
-        setters: [function (_aureliaRouter) {
+        setters: [function (_aureliaLoader) {
+            Loader = _aureliaLoader.Loader;
+        }, function (_aureliaRouter) {
             Router = _aureliaRouter.Router;
         }, function (_coreJs) {}],
         execute: function () {
@@ -26,6 +28,7 @@ System.register(['aurelia-router', 'core-js'], function (_export) {
                     key: 'registerContainer',
                     value: function registerContainer(container) {
                         this.container = container;
+                        this.loader = container.get(Loader);
                         this.router = container.get(Router);
                     }
                 }, {
@@ -61,36 +64,16 @@ System.register(['aurelia-router', 'core-js'], function (_export) {
                                 var pointer = _this2._routeLocations[i];
 
                                 if (pointer) {
-                                    _this2.require(pointer).then(function (routes) {
+                                    _this2.loader.loadText(pointer).then(function (routes) {
                                         if (routes) {
                                             finalRoutes.push(routes);
                                         }
-                                    })['catch'](function (e) {
-                                        throw new Error(e);
                                     });
                                 }
                             }
 
                             _this2._loadedRoutes = finalRoutes;
                             resolve(finalRoutes);
-                        });
-                    }
-                }, {
-                    key: 'require',
-                    value: function require(what) {
-                        return new Promise(function (resolve, reject) {
-                            var xmlhttp = new XMLHttpRequest();
-
-                            xmlhttp.onreadystatechange = function () {
-                                if (xmlhttp.readyState == 4) {
-                                    resolve(xmlhttp.responseText);
-                                } else {
-                                    reject(new Error('Could not load local file.'));
-                                }
-                            };
-
-                            xmlhttp.open('GET', what, true);
-                            xmlhttp.send(null);
                         });
                     }
                 }]);
