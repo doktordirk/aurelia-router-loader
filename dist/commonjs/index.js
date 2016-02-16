@@ -5,10 +5,13 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.configure = configure;
 
+var _aureliaRouter = require('aurelia-router');
+
 var _routerLoader = require('./router-loader');
 
 function configure(aurelia, callbackFunction) {
     var loaderInstance = aurelia.container.get(_routerLoader.RouterLoader);
+    var router = aurelia.container.get(_aureliaRouter.Router);
 
     if (callbackFunction !== undefined && typeof callbackFunction === 'function') {
         callbackFunction(loaderInstance);
@@ -16,11 +19,9 @@ function configure(aurelia, callbackFunction) {
 
     loaderInstance.registerContainer(aurelia.container);
 
-    return new Promise(function (resolve, reject) {
-        loaderInstance.loadRoutes().then(function () {
-            resolve();
+    loaderInstance.loadRoutes().then(function (routes) {
+        routes.forEach(function (route) {
+            router.addRoute(route);
         });
-    })['catch'](function () {
-        reject(new Error('Sorry, there was an error loading one or more of your predefined JSON route files.'));
     });
 }

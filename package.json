@@ -1,6 +1,6 @@
 {
   "name": "aurelia-router-loader",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A plugin for loading routes dynamically from JSON files.",
   "keywords": [
     "aurelia",
@@ -51,7 +51,7 @@
       "dist": "dist/amd"
     },
     "dependencies": {
-      "aurelia-loader": "npm:aurelia-loader@^1.0.0-beta.1.1.1",
+      "aurelia-loader": "^1.0.0-beta.1.1.1",
       "aurelia-router": "^1.0.0-beta.1.1.1",
       "core-js": "^2.0.3"
     },

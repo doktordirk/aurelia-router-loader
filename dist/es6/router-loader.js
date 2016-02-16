@@ -8,7 +8,7 @@ export class RouterLoader {
     router = null;
 
     _routeLocations = [];
-    _loadedRoutes = {};
+    _loadedRoutes = [];
 
     /**
      * Register Container
@@ -40,8 +40,11 @@ export class RouterLoader {
                     if (config) {
                         Object.merge(c, config);
                     }
+
+                    c.map(routes);
                 });
-                resolve();
+
+                resolve(routes);
             });
         });
     }
@@ -71,23 +74,33 @@ export class RouterLoader {
      *
      */
     loadRoutesMap() {
-        return new Promise((resolve, reject) => {
-            let finalRoutes = [];
+        var promises = [];
+        var finalRoutes = [];
 
+        return new Promise((resolve, reject) => {
             for (let i = 0; i < this._routeLocations.length; i++) {
                 let pointer = this._routeLocations[i];
 
                 if (pointer) {
-                    this.loader.loadText(pointer).then(routes => {
-                        if (routes) {
-                            finalRoutes.push(routes);
-                        }
-                    })
+                    promises.push(this.loader.loadText(pointer));
                 }
             }
 
-            this._loadedRoutes = finalRoutes;
-            resolve(finalRoutes);
+            Promise.all(promises).then(values => {
+                for (let i = 0, len = values.length; i < len; i++) {
+                    let pointer = JSON.parse(values[i]);
+
+                    if (pointer.length) {
+                        pointer.forEach(obj => {
+                            finalRoutes.push(obj);
+                        });
+                    }
+                }
+
+                this._loadedRoutes = finalRoutes;
+
+                resolve(finalRoutes);
+            });
         });
     }
 

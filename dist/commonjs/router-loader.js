@@ -21,7 +21,7 @@ var RouterLoader = (function () {
         this.container = null;
         this.router = null;
         this._routeLocations = [];
-        this._loadedRoutes = {};
+        this._loadedRoutes = [];
     }
 
     _createClass(RouterLoader, [{
@@ -42,8 +42,11 @@ var RouterLoader = (function () {
                         if (config) {
                             Object.merge(c, config);
                         }
+
+                        c.map(routes);
                     });
-                    resolve();
+
+                    resolve(routes);
                 });
             });
         }
@@ -57,23 +60,33 @@ var RouterLoader = (function () {
         value: function loadRoutesMap() {
             var _this2 = this;
 
-            return new Promise(function (resolve, reject) {
-                var finalRoutes = [];
+            var promises = [];
+            var finalRoutes = [];
 
+            return new Promise(function (resolve, reject) {
                 for (var i = 0; i < _this2._routeLocations.length; i++) {
                     var pointer = _this2._routeLocations[i];
 
                     if (pointer) {
-                        _this2.loader.loadText(pointer).then(function (routes) {
-                            if (routes) {
-                                finalRoutes.push(routes);
-                            }
-                        });
+                        promises.push(_this2.loader.loadText(pointer));
                     }
                 }
 
-                _this2._loadedRoutes = finalRoutes;
-                resolve(finalRoutes);
+                Promise.all(promises).then(function (values) {
+                    for (var i = 0, len = values.length; i < len; i++) {
+                        var pointer = JSON.parse(values[i]);
+
+                        if (pointer.length) {
+                            pointer.forEach(function (obj) {
+                                finalRoutes.push(obj);
+                            });
+                        }
+                    }
+
+                    _this2._loadedRoutes = finalRoutes;
+
+                    resolve(finalRoutes);
+                });
             });
         }
     }]);

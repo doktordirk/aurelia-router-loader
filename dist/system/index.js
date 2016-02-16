@@ -1,12 +1,13 @@
-System.register(['./router-loader'], function (_export) {
+System.register(['aurelia-router', './router-loader'], function (_export) {
     'use strict';
 
-    var RouterLoader;
+    var Router, RouterLoader;
 
     _export('configure', configure);
 
     function configure(aurelia, callbackFunction) {
         var loaderInstance = aurelia.container.get(RouterLoader);
+        var router = aurelia.container.get(Router);
 
         if (callbackFunction !== undefined && typeof callbackFunction === 'function') {
             callbackFunction(loaderInstance);
@@ -14,17 +15,17 @@ System.register(['./router-loader'], function (_export) {
 
         loaderInstance.registerContainer(aurelia.container);
 
-        return new Promise(function (resolve, reject) {
-            loaderInstance.loadRoutes().then(function () {
-                resolve();
+        loaderInstance.loadRoutes().then(function (routes) {
+            routes.forEach(function (route) {
+                router.addRoute(route);
             });
-        })['catch'](function () {
-            reject(new Error('Sorry, there was an error loading one or more of your predefined JSON route files.'));
         });
     }
 
     return {
-        setters: [function (_routerLoader) {
+        setters: [function (_aureliaRouter) {
+            Router = _aureliaRouter.Router;
+        }, function (_routerLoader) {
             RouterLoader = _routerLoader.RouterLoader;
         }],
         execute: function () {}
