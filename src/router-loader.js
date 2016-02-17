@@ -1,8 +1,6 @@
 import {Loader} from 'aurelia-loader';
 import {Router} from 'aurelia-router';
 
-import 'core-js';
-
 export class RouterLoader {
     container = null;
     router = null;
@@ -95,6 +93,12 @@ export class RouterLoader {
                             finalRoutes.push(obj);
                         });
                     }
+                }
+
+                if (finalRoutes) {
+                    finalRoutes.forEach(route => {
+                        this.router.addRoute(route);
+                    });
                 }
 
                 this._loadedRoutes = finalRoutes;

@@ -1,12 +1,4 @@
-import {configure} from '../../src/index';
-
-class ConfigStub {
-  globalResources(...resources) {
-    this.resources = resources;
-  }
-}
-
-describe('the Aurelia configuration', () => {
+describe('Aurelia router loader', () => {
   var mockedConfiguration;
 
   beforeEach(() => {
