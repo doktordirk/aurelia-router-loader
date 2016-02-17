@@ -12,8 +12,8 @@ export class RouterLoader {
      * Register Container
      * Passed in DI container reference
      *
-     * @param container {any}
-     * @returns void
+     * @param {any} container
+     * @returns {void}
      *
      */
     registerContainer(container) {
@@ -28,7 +28,7 @@ export class RouterLoader {
      * A method used by the bootstrapping phase
      * to load our routes.
      *
-     * @param config {any}
+     * @param {any} config
      *
      */
     loadRoutes(config) {
@@ -58,8 +58,8 @@ export class RouterLoader {
      * when Aurelia first loads. It is where you pass through
      * the location of your route files.
      *
-     * @param routes {array}
-     * @returns void
+     * @param {array} routes An array of route JSON files to load
+     * @returns {void}
      *
      */
     defineRoutes(routes) {
@@ -72,7 +72,7 @@ export class RouterLoader {
      * This method handles looping through the supplied locations
      * and then tries to load the JSON, storing it in an array.
      *
-     * @returns Promise
+     * @returns {Promise}
      *
      */
     loadRoutesMap() {
@@ -84,7 +84,7 @@ export class RouterLoader {
                 let pointer = this._routeLocations[i];
 
                 if (pointer) {
-                    promises.push(this.loader.loadText(pointer));
+                    promises.push(this.loadRoute(pointer));
                 }
             }
 
@@ -104,6 +104,20 @@ export class RouterLoader {
                 resolve(finalRoutes);
             });
         });
+    }
+    
+    /**
+     * Load Route
+     * 
+     * Loads a supplied route file and 
+     * returns a promise
+     * 
+     * @param {any} file The path and file to load
+     * @returns {Promise} Promise contains the file contents
+     * 
+     */
+    loadRoute(file) {
+        return this.loader.loadText('../../../' + file);
     }
 
 }
