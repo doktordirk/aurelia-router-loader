@@ -38,9 +38,13 @@ export class RouterLoader {
                     if (config) {
                         Object.merge(c, config);
                     }
-
-                    c.map(routes);
                 });
+
+                if (routes.length) {
+                    routes.forEach(route => {
+                        this.router.addRoute(route);
+                    });
+                }
 
                 resolve(routes);
             });
@@ -93,12 +97,6 @@ export class RouterLoader {
                             finalRoutes.push(obj);
                         });
                     }
-                }
-
-                if (finalRoutes) {
-                    finalRoutes.forEach(route => {
-                        this.router.addRoute(route);
-                    });
                 }
 
                 this._loadedRoutes = finalRoutes;
