@@ -28,21 +28,15 @@ export class RouterLoader {
      * A method used by the bootstrapping phase
      * to load our routes.
      *
-     * @param {any} config
-     *
+     * @returns {Promise}
+     * 
      */
-    loadRoutes(config) {
+    loadRoutes() {
         return new Promise((resolve, reject) => {
             this.loadRoutesMap().then(routes => {
-                this.router.configure(c => {
-                    if (config) {
-                        Object.merge(c, config);
-                    }
-                });
-
                 if (routes.length) {
-                    routes.forEach(route => {
-                        this.router.addRoute(route);
+                    this.router.configureRouter(config => {
+                        config.map(routes);
                     });
                 }
 
@@ -64,6 +58,10 @@ export class RouterLoader {
      */
     defineRoutes(routes) {
         this._routeLocations = routes;
+        
+        if (routes) {
+            this.loadRoutes();
+        }
     }
 
     /**
