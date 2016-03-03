@@ -2,9 +2,11 @@
 Author routes in your Aurelia applications using JSON files.
 
 ## How to use it
-Like you would any other plugin. Simply include it and then supply the location of your route files. The following assumes you have a ``routes`` folder in your root directory (one up from the src folder).
+Like you would any other plugin. Simply include it and then supply the location of your route files. The following assumes you have a ``routes`` folder in your root application directory (one up from `src`).
 
-```
+**IMPORTANT NOTE:** Due to a limitation with plugins and Aurelia, you need to define a default route. You can't have all of your routes in a JSON file. The first route your application will hit should be defined the regular way.
+
+``` javascript
 export function configure(aurelia) {
     aurelia.use
         .standardConfiguration()
@@ -20,17 +22,10 @@ export function configure(aurelia) {
 }
 ```
 
-Please ensure your router files are in the following format:
+Please ensure your router files are in proper JSON format:
 
 ```json
 [
-      { 
-          "route": ["", "welcome"], 
-          "name": "welcome",      
-          "moduleId": "welcome",      
-          "nav": true, 
-          "title": "Welcome" 
-      },
       { 
           "route": "users",         
           "name": "users",        
