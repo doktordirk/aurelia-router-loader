@@ -9,8 +9,5 @@ export function configure(aurelia, callbackFunction) {
         callbackFunction(loaderInstance);
     }
 
-    // Tell our class about Aurelia's dependency injection container
-    loaderInstance.registerContainer(aurelia.container);
-
     loaderInstance.loadRoutes();
 }
