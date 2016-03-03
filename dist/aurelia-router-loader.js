@@ -1,27 +1,19 @@
+import {inject} from 'aurelia-dependency-injection';
 import {Loader} from 'aurelia-loader';
+import {join} from 'aurelia-path';
 import {Router} from 'aurelia-router';
 
-import 'core-js';
-
+@inject(Loader, Router)
 export class RouterLoader {
     container = null;
     router = null;
 
     _routeLocations = [];
     _loadedRoutes = [];
-
-    /**
-     * Register Container
-     * Passed in DI container reference
-     *
-     * @param container {any}
-     * @returns void
-     *
-     */
-    registerContainer(container) {
-        this.container = container;
-        this.loader = container.get(Loader);
-        this.router = container.get(Router);
+    
+    constructor(loader, router) {
+        this.loader = loader;
+        this.router = router;
     }
 
     /**
@@ -30,20 +22,17 @@ export class RouterLoader {
      * A method used by the bootstrapping phase
      * to load our routes.
      *
-     * @param config {any}
-     *
+     * @returns {Promise}
+     * 
      */
-    loadRoutes(config) {
+    loadRoutes() {
         return new Promise((resolve, reject) => {
             this.loadRoutesMap().then(routes => {
-                this.router.configure(c => {
-                    if (config) {
-                        Object.merge(c, config);
-                    }
-
-                    c.map(routes);
-                });
-
+                if (routes.length) {
+                    routes.forEach(route => {
+                        this.router.addRoute(route);
+                    });
+                }
                 resolve(routes);
             });
         });
@@ -56,12 +45,16 @@ export class RouterLoader {
      * when Aurelia first loads. It is where you pass through
      * the location of your route files.
      *
-     * @param routes {array}
-     * @returns void
+     * @param {array} routes An array of route JSON files to load
+     * @returns {void}
      *
      */
     defineRoutes(routes) {
         this._routeLocations = routes;
+        
+        if (routes) {
+            this.loadRoutes();
+        }
     }
 
     /**
@@ -70,7 +63,7 @@ export class RouterLoader {
      * This method handles looping through the supplied locations
      * and then tries to load the JSON, storing it in an array.
      *
-     * @returns Promise
+     * @returns {Promise}
      *
      */
     loadRoutesMap() {
@@ -82,7 +75,7 @@ export class RouterLoader {
                 let pointer = this._routeLocations[i];
 
                 if (pointer) {
-                    promises.push(this.loader.loadText(pointer));
+                    promises.push(this.loadRoute(pointer));
                 }
             }
 
@@ -90,7 +83,7 @@ export class RouterLoader {
                 for (let i = 0, len = values.length; i < len; i++) {
                     let pointer = JSON.parse(values[i]);
 
-                    if (pointer.length) {
+                    if (pointer) {
                         pointer.forEach(obj => {
                             finalRoutes.push(obj);
                         });
@@ -98,10 +91,35 @@ export class RouterLoader {
                 }
 
                 this._loadedRoutes = finalRoutes;
-
+                
                 resolve(finalRoutes);
             });
         });
     }
+    
+    /**
+     * Load Route
+     * 
+     * Loads a supplied route file and 
+     * returns a promise
+     * 
+     * @param {any} file The path and file to load
+     * @returns {Promise} Promise contains the file contents
+     * 
+     */
+    loadRoute(file) {
+        return this.loader.loadText(join(file));
+    }
 
+}
+
+export function configure(aurelia, callbackFunction) {
+    let loaderInstance = aurelia.container.get(RouterLoader);
+
+    // Do we have a callback function?
+    if (callbackFunction !== undefined && typeof(callbackFunction) === 'function') {
+        callbackFunction(loaderInstance);
+    }
+
+    loaderInstance.loadRoutes();
 }
