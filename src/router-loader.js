@@ -1,25 +1,19 @@
+import {inject} from 'aurelia-dependency-injection';
 import {Loader} from 'aurelia-loader';
+import {join} from 'aurelia-path';
 import {Router} from 'aurelia-router';
 
+@inject(Loader, Router)
 export class RouterLoader {
     container = null;
     router = null;
 
     _routeLocations = [];
     _loadedRoutes = [];
-
-    /**
-     * Register Container
-     * Passed in DI container reference
-     *
-     * @param {any} container
-     * @returns {void}
-     *
-     */
-    registerContainer(container) {
-        this.container = container;
-        this.loader = container.get(Loader);
-        this.router = container.get(Router);
+    
+    constructor(loader, router) {
+        this.loader = loader;
+        this.router = router;
     }
 
     /**
@@ -35,11 +29,10 @@ export class RouterLoader {
         return new Promise((resolve, reject) => {
             this.loadRoutesMap().then(routes => {
                 if (routes.length) {
-                    this.router.configureRouter(config => {
-                        config.map(routes);
+                    routes.forEach(route => {
+                        this.router.addRoute(route);
                     });
                 }
-
                 resolve(routes);
             });
         });
@@ -90,7 +83,7 @@ export class RouterLoader {
                 for (let i = 0, len = values.length; i < len; i++) {
                     let pointer = JSON.parse(values[i]);
 
-                    if (pointer.length) {
+                    if (pointer) {
                         pointer.forEach(obj => {
                             finalRoutes.push(obj);
                         });
@@ -98,7 +91,7 @@ export class RouterLoader {
                 }
 
                 this._loadedRoutes = finalRoutes;
-
+                
                 resolve(finalRoutes);
             });
         });
@@ -115,7 +108,7 @@ export class RouterLoader {
      * 
      */
     loadRoute(file) {
-        return this.loader.loadText('../../../' + file);
+        return this.loader.loadText(join(file));
     }
 
 }
