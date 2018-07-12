@@ -48,3 +48,16 @@ Please ensure your router files are in proper JSON format:
       }
 ]
 ```
+
+Instead of configureRouter, we just get the router from the plugin
+```js
+import { RouterLoader } from 'aurelia-router-loader';
+
+@autoinject()
+export class App {
+  public router: Router;
+
+  constructor(private routerLoader: RouterLoader) {
+    this.router = routerLoader.router;
+  }
+```
