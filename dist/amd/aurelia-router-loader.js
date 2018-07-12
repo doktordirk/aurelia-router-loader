@@ -38,8 +38,10 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-loader', 'aurelia-pa
             this._routeLocations = routes;
 
             if (routes) {
-                this.loadRoutes();
+                return this.loadRoutes();
             }
+
+            return Promise.resolve();
         };
 
         RouterLoader.prototype.loadRoutesMap = function loadRoutesMap() {
@@ -59,7 +61,12 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-loader', 'aurelia-pa
 
                 Promise.all(promises).then(function (values) {
                     for (var i = 0, len = values.length; i < len; i++) {
-                        var pointer = JSON.parse(values[i]);
+                        var pointer = undefined;
+                        try {
+                            pointer = JSON.parse(values[i]);
+                        } catch (_) {
+                            pointer = values[i];
+                        }
 
                         if (pointer) {
                             pointer.forEach(function (obj) {
@@ -90,9 +97,9 @@ define(['exports', 'aurelia-dependency-injection', 'aurelia-loader', 'aurelia-pa
         var loaderInstance = aurelia.container.get(RouterLoader);
 
         if (callbackFunction !== undefined && typeof callbackFunction === 'function') {
-            callbackFunction(loaderInstance);
+            return callbackFunction(loaderInstance);
         }
 
-        loaderInstance.loadRoutes();
+        return loaderInstance.loadRoutes();
     }
 });

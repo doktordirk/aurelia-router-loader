@@ -53,8 +53,10 @@ export class RouterLoader {
         this._routeLocations = routes;
         
         if (routes) {
-            this.loadRoutes();
+            return this.loadRoutes();
         }
+
+        return Promise.resolve();
     }
 
     /**
@@ -81,7 +83,13 @@ export class RouterLoader {
 
             Promise.all(promises).then(values => {
                 for (let i = 0, len = values.length; i < len; i++) {
-                    let pointer = JSON.parse(values[i]);
+                    let pointer;
+                    try { 
+                        pointer = JSON.parse(values[i]);
+                    } catch(_) {
+                        // Webpack already has them parsed, so we can use it directly
+                        pointer = values[i];
+                    }
 
                     if (pointer) {
                         pointer.forEach(obj => {
@@ -118,8 +126,8 @@ export function configure(aurelia, callbackFunction) {
 
     // Do we have a callback function?
     if (callbackFunction !== undefined && typeof(callbackFunction) === 'function') {
-        callbackFunction(loaderInstance);
+        return callbackFunction(loaderInstance);
     }
 
-    loaderInstance.loadRoutes();
+    return loaderInstance.loadRoutes();
 }

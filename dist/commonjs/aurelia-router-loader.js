@@ -45,8 +45,10 @@ var RouterLoader = (function () {
         this._routeLocations = routes;
 
         if (routes) {
-            this.loadRoutes();
+            return this.loadRoutes();
         }
+
+        return Promise.resolve();
     };
 
     RouterLoader.prototype.loadRoutesMap = function loadRoutesMap() {
@@ -66,7 +68,12 @@ var RouterLoader = (function () {
 
             Promise.all(promises).then(function (values) {
                 for (var i = 0, len = values.length; i < len; i++) {
-                    var pointer = JSON.parse(values[i]);
+                    var pointer = undefined;
+                    try {
+                        pointer = JSON.parse(values[i]);
+                    } catch (_) {
+                        pointer = values[i];
+                    }
 
                     if (pointer) {
                         pointer.forEach(function (obj) {
@@ -97,8 +104,8 @@ function configure(aurelia, callbackFunction) {
     var loaderInstance = aurelia.container.get(RouterLoader);
 
     if (callbackFunction !== undefined && typeof callbackFunction === 'function') {
-        callbackFunction(loaderInstance);
+        return callbackFunction(loaderInstance);
     }
 
-    loaderInstance.loadRoutes();
+    return loaderInstance.loadRoutes();
 }
