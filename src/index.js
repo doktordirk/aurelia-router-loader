@@ -6,8 +6,8 @@ export function configure(aurelia, callbackFunction) {
 
     // Do we have a callback function?
     if (callbackFunction !== undefined && typeof(callbackFunction) === 'function') {
-        callbackFunction(loaderInstance);
+        return callbackFunction(loaderInstance);
     }
 
-    loaderInstance.loadRoutes();
+    return loaderInstance.loadRoutes();
 }

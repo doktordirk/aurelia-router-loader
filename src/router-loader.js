@@ -53,8 +53,10 @@ export class RouterLoader {
         this._routeLocations = routes;
         
         if (routes) {
-            this.loadRoutes();
+            return this.loadRoutes();
         }
+
+        return Promise.resolve();
     }
 
     /**
