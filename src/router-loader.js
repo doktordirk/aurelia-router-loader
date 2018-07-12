@@ -86,7 +86,7 @@ export class RouterLoader {
                     let pointer;
                     try { 
                         pointer = JSON.parse(values[i]);
-                    } catch() {
+                    } catch(_) {
                         // Webpack already has them parsed, so we can use it directly
                         pointer = values[i];
                     }
