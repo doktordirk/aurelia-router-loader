@@ -81,7 +81,13 @@ export class RouterLoader {
 
             Promise.all(promises).then(values => {
                 for (let i = 0, len = values.length; i < len; i++) {
-                    let pointer = JSON.parse(values[i]);
+                    let pointer;
+                    try { 
+                        pointer = JSON.parse(values[i]);
+                    } catch() {
+                        // Webpack already has them parsed, so we can use it directly
+                        pointer = values[i];
+                    }
 
                     if (pointer) {
                         pointer.forEach(obj => {
